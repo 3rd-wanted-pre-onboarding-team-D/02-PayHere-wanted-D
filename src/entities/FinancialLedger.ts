@@ -13,8 +13,8 @@ import { User } from './User';
 
 @Index('id', ['id'], {})
 @Index('user', ['user'], {})
-@Entity({ schema: 'payhere', name: 'finantialledgers' })
-export class FinantialLedger extends BaseEntity {
+@Entity({ schema: 'payhere', name: 'financialledgers' })
+export class FinancialLedger extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
