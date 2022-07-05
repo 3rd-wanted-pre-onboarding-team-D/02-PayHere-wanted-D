@@ -15,4 +15,5 @@ export const TypeOrmTestConfig: TypeOrmModuleOptions = {
   logging: false, //쿼리문 로그
   keepConnectionAlive: true, //핫 리로딩 시 연결 차단 막기
   migrationsRun: false,
+  dropSchema: true,
 };
