@@ -14,4 +14,9 @@ export class FinancialLedgerController {
   async createMemo(@Body() financialLedgerDto: FinancialLedgerDto) {
     return await this.financialLedgerService.createMemo(financialLedgerDto);
   }
+
+  @Get('/:id')
+  async getOneMemo(@Param('id') id: number) {
+    return await this.financialLedgerService.getOneMemo(id);
+  }
 }

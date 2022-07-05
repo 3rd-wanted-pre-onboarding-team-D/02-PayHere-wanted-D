@@ -15,4 +15,8 @@ export class FinancialLedgerService {
   async createMemo(financialLedgerDto: FinancialLedgerDto) {
     return await this.financialLedgerRepository.createMemo(financialLedgerDto);
   }
+
+  async getOneMemo(id: number) {
+    return await this.financialLedgerRepository.findOne(id);
+  }
 }
