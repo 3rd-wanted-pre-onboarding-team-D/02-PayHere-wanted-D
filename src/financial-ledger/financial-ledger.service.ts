@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FinancialLedger } from 'src/entities/FinancialLedger';
-import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
+import { FinancialLedgerDto } from './dto/financial-ledger.dto';
+import { FinancialLedgerRepository } from './financial-ledger.repository';
 
 @Injectable()
 export class FinancialLedgerService {
   constructor(
-    @InjectRepository(FinancialLedger)
-    private readonly financialLedgerRepository: Repository<FinancialLedger>,
+    @InjectRepository(FinancialLedgerRepository)
+    private readonly financialLedgerRepository: FinancialLedgerRepository,
   ) {}
+
+  async createMemo(financialLedgerDto: FinancialLedgerDto) {
+    return await this.financialLedgerRepository.createMemo(financialLedgerDto);
+  }
 }
