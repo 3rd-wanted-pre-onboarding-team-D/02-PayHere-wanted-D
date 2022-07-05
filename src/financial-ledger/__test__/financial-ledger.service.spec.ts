@@ -57,4 +57,48 @@ describe('FinancialLedgerService', () => {
       await expect(result).rejects.toThrow(NotFoundException);
     });
   });
+
+  describe('update', () => {
+    test('해당하는 가계부 내역이 수정되는가', async () => {
+      // given
+      const user = getUser();
+      const financialLedger = getFinancialLedger({ user });
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+      await em.save(financialLedger);
+
+      // when
+      const result = service.update(user, financialLedger.id, {
+        income: 100000,
+        expenditure: 0,
+        remarks: 'updated',
+      });
+
+      // then
+      await expect(result).resolves.toEqual(undefined);
+      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+        id: financialLedger.id,
+      });
+      expect(savedFinancialLedger).not.toBeNull();
+      expect(savedFinancialLedger).toMatchObject({
+        income: 100000,
+        expenditure: 0,
+        remarks: 'updated',
+      });
+    });
+
+    test('해당하는 가계부가 없으면 NotFoundException이 발생하는가', async () => {
+      // given
+      const user = getUser();
+      await dataSource.createEntityManager().save(user);
+      // when
+      const result = service.update(user, 1, {
+        income: 0,
+        expenditure: 0,
+        remarks: 'updated',
+      });
+      // then
+      await expect(result).rejects.toThrow(NotFoundException);
+    });
+  });
 });

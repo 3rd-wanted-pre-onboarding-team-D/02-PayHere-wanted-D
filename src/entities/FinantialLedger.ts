@@ -44,4 +44,18 @@ export class FinantialLedger extends BaseEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  update({
+    income,
+    expenditure,
+    remarks,
+  }: {
+    income: number;
+    expenditure: number;
+    remarks: string;
+  }) {
+    this.expenditure = expenditure;
+    this.income = income;
+    this.remarks = remarks;
+  }
 }
