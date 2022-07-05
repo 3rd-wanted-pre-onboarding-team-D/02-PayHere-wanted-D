@@ -38,7 +38,7 @@ export class FinancialLedgerService {
       throw new NotFoundException('해당하는 가계부 내역이 존재하지 않습니다.');
     }
 
-    financicalLedger.deletedAt = new Date();
+    financicalLedger.delete();
 
     await this.financialLedgerRepository.save(financicalLedger);
   }

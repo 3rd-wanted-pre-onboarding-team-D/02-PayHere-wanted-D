@@ -58,4 +58,8 @@ export class FinantialLedger extends BaseEntity {
     this.income = income;
     this.remarks = remarks;
   }
+
+  delete() {
+    this.deletedAt = new Date();
+  }
 }
