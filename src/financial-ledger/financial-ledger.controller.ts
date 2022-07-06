@@ -24,7 +24,7 @@ export class FinancialLedgerController {
 
   //작성한 가계부 리스트 전부
   @Get()
-  async getAllMemo(user: User) {
-    return await this.financialLedgerService.getAllMemo(user.id);
+  async getAllMemo() {
+    return await this.financialLedgerService.getAllMemo();
   }
 }
