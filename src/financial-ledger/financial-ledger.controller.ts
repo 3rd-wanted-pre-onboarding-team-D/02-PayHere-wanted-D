@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import { FinancialLedger } from 'src/entities/FinancialLedger';
 import { User } from 'src/entities/User';
 import { FinancialLedgerDto } from './dto/financial-ledger.dto';
@@ -25,6 +25,7 @@ export class FinancialLedgerController {
   //작성한 가계부 리스트 전부
   @Get()
   async getAllMemo() {
-    return await this.financialLedgerService.getAllMemo();
+    const result = await this.financialLedgerService.getAllMemo();
+    return result;
   }
 }

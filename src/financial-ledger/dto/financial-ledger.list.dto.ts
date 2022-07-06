@@ -9,11 +9,13 @@ export class FinancialLedgerListDto {
 
   constructor(
     id: number,
+    day_date: string,
     expenditure: number,
     income: number,
     remarks: string,
   ) {
     this.id = id;
+    this.day_date = day_date;
     this.expenditure = expenditure;
     this.income = income;
     this.remarks = remarks;

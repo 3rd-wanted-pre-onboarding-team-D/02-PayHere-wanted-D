@@ -24,25 +24,28 @@ export class FinancialLedgerRepository extends Repository<FinancialLedger> {
   }
 
   async getAll() {
-    const groupData = await this.findDayGroup(2);
-    const userData = await this.findUserList(2);
+    const groupData = await this.findDayGroup(1);
+    const userData = await this.findUserList(1);
 
     const userList: Map<string, FinancialLedgerResultDto> = new Map();
 
     groupData.forEach((gData) => {
-      const groupDay = gData.day;
-      userList.set(groupDay, {
-        money: gData.sum,
-        memolist: [],
-      });
+      const groupDay = gData.day_date;
+      if (!userList.has(groupDay)) {
+        userList.set(groupDay, {
+          money: gData.today_sum,
+          memolist: [],
+        });
+      }
 
       userData.forEach((uData) => {
-        if (uData.day_date === groupDay && gData.id.includes(uData.id)) {
+        if (uData.day_date === groupDay && gData.idxs.includes(uData.id)) {
           userList
             .get(groupDay)
             .memolist.push(
               new FinancialLedgerListDto(
                 uData.id,
+                uData.day_date,
                 uData.expenditure,
                 uData.income,
                 uData.remarks,
@@ -52,7 +55,7 @@ export class FinancialLedgerRepository extends Repository<FinancialLedger> {
       });
     });
 
-    console.log(userList);
+    return userList;
   }
 
   async findDayGroup(userId: number): Promise<FinancialLedgerGroupDto[]> {
@@ -63,14 +66,14 @@ export class FinancialLedgerRepository extends Repository<FinancialLedger> {
         `SUM(income) - SUM(expenditure) AS today_sum`,
         `group_concat(id) as 'idxs'`,
       ])
-      .where('userId = :userId', {
-        userId: 2,
+      .where('userId = :uid', {
+        uid: userId,
       })
       .andWhere('deletedAt IS NULL') //삭제된 기록이 없을때 by 최아름
       .groupBy('day_date')
       .orderBy('day_date', 'DESC')
       .getRawMany();
-    //console.log(data);
+
     return data;
   }
 
@@ -83,14 +86,13 @@ export class FinancialLedgerRepository extends Repository<FinancialLedger> {
         'income',
         'remarks',
       ])
-      .where('userId = :userId', {
-        userId: 2,
+      .where('userId = :uid', {
+        uid: userId,
       })
       .orderBy('day_date', 'DESC')
       .addOrderBy('id', 'DESC')
       .getRawMany();
 
-    //console.log(todayList);
     return todayList;
   }
 }
