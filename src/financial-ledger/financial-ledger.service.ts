@@ -19,4 +19,8 @@ export class FinancialLedgerService {
   async getOneMemo(id: number) {
     return await this.financialLedgerRepository.findOne(id);
   }
+
+  async getAllMemo(userId: number) {
+    return await this.financialLedgerRepository.getAll(userId);
+  }
 }
