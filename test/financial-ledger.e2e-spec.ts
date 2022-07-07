@@ -39,7 +39,7 @@ describe('FinancialLedger E2E Test', () => {
   describe('PUT /financial-ledger/:id', () => {
     const url = (id: number) => `${root}/${id}`;
 
-    test('해당하는 가계부 내역의 수입, 지출, 메모가 수정되는가', async () => {
+    test('해당하는 가계부 내역의 수입, 지출, 메모가 수정하고 204를 리턴하는가', async () => {
       // given
       const user = getUser();
       const financialLedger = getFinancialLedger({ user });
@@ -161,6 +161,111 @@ describe('FinancialLedger E2E Test', () => {
       expect(res.body).toMatchObject({
         statusCode: HttpStatus.BAD_REQUEST,
         message: '삭제된 가계부 내역입니다',
+      });
+    });
+  });
+  describe('PUT /financial-ledger/:id/cancellation', () => {
+    const url = (id: number) => `${root}/${id}/cancellation`;
+
+    test('해당하는 가계부 내역을 삭제하고 204를 리턴하는가', async () => {
+      // given
+      const user = getUser();
+      const financialLedger = getFinancialLedger({ user });
+
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+      await em.save(financialLedger);
+
+      const accessToken = AccessToken.of(user);
+
+      // when
+      await request(app.getHttpServer())
+        .put(url(financialLedger.id))
+        .set({ ...accessToken.authorizationHeaderForm })
+        .expect(HttpStatus.NO_CONTENT);
+
+      // then
+      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+        id: financialLedger.id,
+      });
+
+      expect(savedFinancialLedger).toMatchObject({
+        deletedAt: expect.any(Date),
+      });
+    });
+
+    test('토큰이 유효하지 않으면 401을 반환하는가', async () => {
+      // given
+      const user = getUser();
+      const financialLedger = getFinancialLedger({ user });
+
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+      await em.save(financialLedger);
+
+      // when
+      const res = await request(app.getHttpServer())
+        .put(url(financialLedger.id))
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      // then
+      expect(res.body).toMatchObject({
+        statusCode: 401,
+        message: 'Unauthorized',
+      });
+    });
+
+    test('가계부 내역이 존재하지 않으면 404를 반환하는가', async () => {
+      // given
+      const user = getUser();
+
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+
+      const accessToken = AccessToken.of(user);
+
+      const body: UpdateRequestDto = {
+        income: 10000,
+        expenditure: 0,
+        remarks: 'updated',
+      };
+
+      // when
+      const res = await request(app.getHttpServer())
+        .put(url(123))
+        .set({ ...accessToken.authorizationHeaderForm })
+        .send(body)
+        .expect(HttpStatus.NOT_FOUND);
+
+      // then
+      expect(res.body).toMatchObject({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: '해당하는 가계부 내역이 존재하지 않습니다',
+      });
+    });
+
+    test('이미 삭제된 가계부 내역인 경우 401을 반환하는가', async () => {
+      // given
+      const user = getUser();
+      const financialLedger = getFinancialLedger({ user });
+      financialLedger.delete();
+
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+      await em.save(financialLedger);
+
+      const accessToken = AccessToken.of(user);
+
+      // when
+      const res = await request(app.getHttpServer())
+        .put(url(financialLedger.id))
+        .set({ ...accessToken.authorizationHeaderForm })
+        .expect(HttpStatus.BAD_REQUEST);
+
+      // then
+      expect(res.body).toMatchObject({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: '이미 삭제된 가계부 내역 입니다',
       });
     });
   });
