@@ -135,6 +135,10 @@ export class AuthService {
     const token = await this.getTokenEntity(userId, userAgent);
     if (token) {
       await this.tokenRepository.delete(token.id);
+      return Object.assign({
+        data: token,
+        message: '토큰이 삭제되었습니다.',
+      });
     } else {
       throw new NotFoundException();
     }
@@ -150,10 +154,13 @@ export class AuthService {
       .leftJoinAndSelect('token.user', 'user')
       .getMany();
 
+    if (!tokens) return null;
+
     tokens.forEach((token) => {
       if (token.userAgent === userAgent && token.user.id === userId) {
         tokenEntity = token;
         delete tokenEntity.user;
+        return;
       }
     });
 
