@@ -7,7 +7,9 @@ import { FinancialLedgerInterceptor } from './financial-ledger/interceptor/finan
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bodyParser: true });
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
   await app.listen(3000);
   app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: true }));
   app.useGlobalInterceptors(new FinancialLedgerInterceptor());

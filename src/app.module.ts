@@ -6,9 +6,12 @@ import { FinancialLedgerModule } from './financial-ledger/financial-ledger.modul
 import * as ormConfig from '../ormConfig';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { FinancialLedgerInterceptor } from './financial-ledger/interceptor/financial-ledger.interceptor';
+import { AuthModule } from './auth/auth.module';
+import * as ormConfig from '../ormConfig';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(ormConfig), FinancialLedgerModule],
+  imports: [TypeOrmModule.forRoot(ormConfig), UsersModule, AuthModule, FinancialLedgerModule],
   controllers: [AppController],
   providers: [
     AppService,
