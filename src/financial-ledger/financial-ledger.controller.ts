@@ -38,4 +38,15 @@ export class FinancialLedgerController {
       remarks: body.remarks,
     });
   }
+
+  @Put('/:id/cancellation')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiNoContentResponse()
+  async delete(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) financialLedgerId: number,
+  ) {
+    return this.financialLedgerService.delete(user, financialLedgerId);
+  }
 }
