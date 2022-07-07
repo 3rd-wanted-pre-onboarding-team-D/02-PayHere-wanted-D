@@ -1,11 +1,8 @@
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsNumber, Matches } from 'class-validator';
 
 //가계부 작성 DTO
 export class FinancialLedgerWriteDto {
-  @IsNumber()
-  @IsNotEmpty()
-  userId: string;
-
   @IsNumber()
   expenditure: number;
 
@@ -13,6 +10,8 @@ export class FinancialLedgerWriteDto {
   income: number;
 
   @IsDate()
+  @Type(() => Date)
   date: Date;
+
   remarks: string;
 }

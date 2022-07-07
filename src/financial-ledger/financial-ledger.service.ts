@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FinancialLedger } from 'src/entities/FinancialLedger';
 import { Repository } from 'typeorm';
@@ -8,6 +8,8 @@ import { FinancialLedgerGroupDto } from './dto/financial-ledger.group.dto';
 import { FinancialLedgerListDto } from './dto/financial-ledger.list.dto';
 import { FinancialLedgerResponseDto } from './dto/financial-ledger.response.dto';
 import { FinancialLedgerDto } from './dto/financial-ledger.dto';
+import { User } from 'src/entities/User';
+import { threadId } from 'worker_threads';
 
 @Injectable()
 export class FinancialLedgerService {
@@ -16,29 +18,36 @@ export class FinancialLedgerService {
     private readonly financialLedgerRepository: Repository<FinancialLedger>,
   ) {}
 
-  //유저 인증 추가 필요
-  async createMemo(financialLedgerWriteDto: FinancialLedgerWriteDto) {
+  //가계부 작성
+  async createMemo(
+    financialLedgerWriteDto: FinancialLedgerWriteDto,
+    user: User,
+  ) {
     const { expenditure, income, date, remarks } = financialLedgerWriteDto;
 
     const memo = this.financialLedgerRepository.create({
+      user: { id: user.id },
       expenditure: expenditure,
       income: income,
       date: date,
       remarks: remarks,
     });
 
-    await this.financialLedgerRepository.save(memo);
-    return memo;
+    return await this.financialLedgerRepository.save(memo);
   }
 
-  async getOneMemo(id: number): Promise<FinancialLedgerDto> {
+  //가계부 1개내역 상세보기
+  async getOneMemo(id: number, userId: number): Promise<FinancialLedgerDto> {
     const data = await this.financialLedgerRepository
       .createQueryBuilder('FinancialLedger')
       .where('id = :id', {
         id: id,
       })
+      .andWhere('userId = :uid', {
+        uid: userId,
+      })
       .andWhere('deletedAt IS NULL')
-      .getRawOne();
+      .getOne();
 
     const result = new FinancialLedgerDto(
       data.id,
@@ -50,12 +59,13 @@ export class FinancialLedgerService {
       data.updatedAt,
       data.deletedAt,
     );
+
     return result;
   }
 
-  async getAllMemo() {
-    const groupData = await this.findDayGroup(3);
-    const userData = await this.findUserList(3);
+  async getAllMemo(userId: number) {
+    const groupData = await this.findDayGroup(userId);
+    const userData = await this.findUserList(userId);
 
     const resultList = [];
 

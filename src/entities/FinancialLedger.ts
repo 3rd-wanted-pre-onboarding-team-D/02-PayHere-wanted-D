@@ -17,7 +17,7 @@ export class FinancialLedger {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id, {
+  @ManyToOne(() => User, (user) => user.financialLedgerList, {
     nullable: false,
     onDelete: 'CASCADE',
   })
