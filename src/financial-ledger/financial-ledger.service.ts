@@ -44,7 +44,7 @@ export class FinancialLedgerService {
   }
 
   /**
-   * 삭제를 원하는 가계부 내역의 존재 여무 및 삭제 여부를 확인 한 후, soft delete
+   * 삭제를 원하는 가계부 내역의 존재 여무 및 삭제 여부를 확인 한 후, soft delete를 수행합니다
    *
    * @param user 요청한 유저
    * @param financialLedgerId 삭제할 가계부 내역 아이디
@@ -68,6 +68,12 @@ export class FinancialLedgerService {
     await this.financialLedgerRepository.save(financialLedger);
   }
 
+  /**
+   * 복구하기 원하는 가계부 내역의 존재 및 삭제 여부를 확인 한 후, 삭제되었다면 복구합니다.
+   *
+   * @param user 요청한 유저
+   * @param financialLedgerId 복구할 가계부 아이디
+   */
   async restore(user: User, financialLedgerId: number) {
     const financialLedger = await this.financialLedgerRepository.findOneBy({
       user: { id: user.id },
@@ -75,11 +81,11 @@ export class FinancialLedgerService {
     });
 
     if (!financialLedger) {
-      throw new NotFoundException('해당하는 가계부 내역이 존재하지 않습니다.');
+      throw new NotFoundException('해당하는 가계부 내역이 존재하지 않습니다');
     }
 
     if (!financialLedger.isDeleted()) {
-      throw new BadRequestException('삭제되지 않은 가계부 내역 입니다.');
+      throw new BadRequestException('삭제되지 않은 가계부 내역 입니다');
     }
 
     financialLedger.restore();

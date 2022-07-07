@@ -49,4 +49,15 @@ export class FinancialLedgerController {
   ) {
     return this.financialLedgerService.delete(user, financialLedgerId);
   }
+
+  @Put('/:id/restoration')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiNoContentResponse()
+  async restore(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) financialLedgerId: number,
+  ) {
+    return this.financialLedgerService.restore(user, financialLedgerId);
+  }
 }
