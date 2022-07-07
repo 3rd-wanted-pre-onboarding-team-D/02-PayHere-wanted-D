@@ -1,13 +1,15 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
 
+dotenv.config({ path: path.resolve(__dirname, '../../.env.test') });
 export const TypeOrmTestConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  host: 'localhost',
+  host: process.env.DB_HOST,
   port: 3307,
-  username: 'test',
-  password: 'test',
-  database: 'test',
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   entities: [path.resolve(__dirname, '../../src/entities/*.{js,ts}')],
   autoLoadEntities: true,
   charset: 'utf8mb4',
