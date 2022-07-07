@@ -32,11 +32,7 @@ export class FinancialLedgerController {
     @Param('id', ParseIntPipe) financialLedgerId: number,
     @Body(new ValidationPipe({ transform: true })) body: UpdateRequestDto,
   ) {
-    return this.financialLedgerService.update(user, financialLedgerId, {
-      expenditure: body.expenditure,
-      income: body.income,
-      remarks: body.remarks,
-    });
+    return this.financialLedgerService.update(user, financialLedgerId, body);
   }
 
   @Put('/:id/cancellation')

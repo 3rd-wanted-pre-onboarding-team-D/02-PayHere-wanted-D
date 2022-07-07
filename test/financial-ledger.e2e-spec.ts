@@ -11,6 +11,7 @@ import { UpdateRequestDto } from '../src/financial-ledger/dto/update-request.dto
 import { AuthModule } from '../src/auth/auth.module';
 import { AccessToken } from './utils/access-token';
 import { FinancialLedger } from '../src/entities/FinancialLedger';
+import { clearDatabase } from './utils/clear-database';
 
 describe('FinancialLedger E2E Test', () => {
   const root = '/financial-ledgers';
@@ -32,6 +33,7 @@ describe('FinancialLedger E2E Test', () => {
   });
 
   afterAll(async () => {
+    await clearDatabase(dataSource);
     await dataSource.destroy();
     await app.close();
   });

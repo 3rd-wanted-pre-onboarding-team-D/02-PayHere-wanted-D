@@ -2,6 +2,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { clearDatabase } from '../../../test/utils/clear-database';
 import { TypeOrmTestConfig } from '../../../test/utils/typeorm-test-config';
 import { FinancialLedger } from '../../entities/FinancialLedger';
 import { FinancialLedgerRepository } from '../financial-ledger.repository';
@@ -24,6 +25,7 @@ describe('FinancialLedgerService', () => {
   });
 
   afterEach(async () => {
+    await clearDatabase(dataSource);
     await dataSource.destroy();
   });
 
