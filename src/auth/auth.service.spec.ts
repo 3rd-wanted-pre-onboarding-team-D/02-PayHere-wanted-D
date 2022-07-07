@@ -5,6 +5,7 @@ import { User } from '../entities/User';
 import { Repository } from 'typeorm';
 import { Token } from '../entities/Token';
 import { AuthService } from './auth.service';
+import { NotFoundException } from '@nestjs/common';
 
 const mockPostRepository = () => ({
   save: jest.fn(),
@@ -12,7 +13,9 @@ const mockPostRepository = () => ({
   findOne: jest.fn(),
   softDelete: jest.fn(),
 });
-
+/**
+ * MockRepository Type 지정
+ */
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 describe('AuthService', () => {
@@ -23,6 +26,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        // 사용하는 Repository -> Mock 이용하여 Value 지정
         {
           provide: getRepositoryToken(Token),
           useValue: mockPostRepository(),

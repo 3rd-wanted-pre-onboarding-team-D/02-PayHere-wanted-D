@@ -97,7 +97,7 @@ export class AuthService {
     const currentHashedRefreshToken = await hash(refreshToken, 10); // bcrypt의 hash 를 이용하여 암호화하여 저장
     const user = await this.userRepository.findOne({ where: { id: userId } }); // userId로 user 가져오기
     if (!user) {
-      throw new HttpException('Not Exists userId', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('user가 존재하지 않습니다.');
     }
 
     let tokenEntity = await this.getTokenEntity(userId, userAgent);
