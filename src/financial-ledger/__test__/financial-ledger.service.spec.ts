@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
@@ -44,7 +44,7 @@ describe('FinancialLedgerService', () => {
       const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
         id: financialLedger.id,
       });
-      expect(savedFinancialLedger).toEqual(null);
+      expect(savedFinancialLedger.deletedAt).not.toBeNull();
     });
 
     test('해당하는 가계부가 없으면 NotFoundException이 발생하는가', async () => {
@@ -99,6 +99,52 @@ describe('FinancialLedgerService', () => {
       });
       // then
       await expect(result).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('restore', () => {
+    test('해당하는 삭제된 가계부 내역의 deletedAt값이 null로 변경되는가', async () => {
+      // given
+      const user = getUser();
+      const financialLedger = getFinancialLedger({ user });
+      financialLedger.deletedAt = new Date();
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+      await em.save(financialLedger);
+
+      // when
+      const result = service.restore(user, financialLedger.id);
+
+      // then
+      await expect(result).resolves.toBeUndefined();
+    });
+
+    test('해당하는 가계부 내역이 없으면 NotFoundException이 발생하는가', async () => {
+      // given
+      const user = getUser();
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+
+      // when
+      const result = service.restore(user, 123);
+
+      // then
+      await expect(result).rejects.toThrow(NotFoundException);
+    });
+
+    test('해당하는 가계부 내역이 삭제된 내역이 아니면 BadRequestException이 발생하는가', async () => {
+      // given
+      const user = getUser();
+      const financialLedger = getFinancialLedger({ user });
+      const em = dataSource.createEntityManager();
+      await em.save(user);
+      await em.save(financialLedger);
+
+      // when
+      const result = service.restore(user, financialLedger.id);
+
+      // then
+      await expect(result).rejects.toThrow(BadRequestException);
     });
   });
 });

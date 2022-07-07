@@ -1,8 +1,6 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   Index,
   ManyToOne,
@@ -14,7 +12,7 @@ import { User } from './User';
 @Index('id', ['id'], {})
 @Index('user', ['user'], {})
 @Entity({ schema: 'payhere', name: 'finantialledgers' })
-export class FinantialLedger extends BaseEntity {
+export class FinantialLedger {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
@@ -39,7 +37,7 @@ export class FinantialLedger extends BaseEntity {
   @CreateDateColumn()
   createdAt: Date;
 
-  @DeleteDateColumn()
+  @Column({ nullable: true })
   deletedAt: Date;
 
   @UpdateDateColumn()
@@ -61,5 +59,13 @@ export class FinantialLedger extends BaseEntity {
 
   delete() {
     this.deletedAt = new Date();
+  }
+
+  isDeleted() {
+    return this.deletedAt !== null;
+  }
+
+  restore() {
+    this.deletedAt = null;
   }
 }
