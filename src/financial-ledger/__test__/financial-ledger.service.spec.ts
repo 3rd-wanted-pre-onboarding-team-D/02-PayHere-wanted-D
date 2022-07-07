@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { TypeOrmTestConfig } from '../../../test/utils/typeorm-test-config';
-import { FinantialLedger } from '../../entities/FinantialLedger';
+import { FinancialLedger } from '../../entities/FinancialLedger';
 import { FinancialLedgerRepository } from '../financial-ledger.repository';
 import { FinancialLedgerService } from '../financial-ledger.service';
 import { getFinancialLedger } from './financial-ledger.fixture';
@@ -41,7 +41,7 @@ describe('FinancialLedgerService', () => {
 
       // then
       await expect(result).resolves.toEqual(undefined);
-      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+      const savedFinancialLedger = await em.findOneBy(FinancialLedger, {
         id: financialLedger.id,
       });
       expect(savedFinancialLedger.deletedAt).not.toBeNull();
@@ -76,7 +76,7 @@ describe('FinancialLedgerService', () => {
 
       // then
       await expect(result).resolves.toEqual(undefined);
-      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+      const savedFinancialLedger = await em.findOneBy(FinancialLedger, {
         id: financialLedger.id,
       });
       expect(savedFinancialLedger).not.toBeNull();

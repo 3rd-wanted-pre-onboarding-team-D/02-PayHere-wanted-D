@@ -11,8 +11,8 @@ import { User } from './User';
 
 @Index('id', ['id'], {})
 @Index('user', ['user'], {})
-@Entity({ schema: 'payhere', name: 'finantialledgers' })
-export class FinantialLedger {
+@Entity({ schema: 'payhere', name: 'financialledgers' })
+export class FinancialLedger {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 

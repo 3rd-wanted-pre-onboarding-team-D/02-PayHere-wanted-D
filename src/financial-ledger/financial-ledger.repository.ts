@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { FinantialLedger } from '../entities/FinantialLedger';
+import { FinancialLedger } from '../entities/FinancialLedger';
 
 @Injectable()
-export class FinancialLedgerRepository extends Repository<FinantialLedger> {
+export class FinancialLedgerRepository extends Repository<FinancialLedger> {
   constructor(private readonly dataSource: DataSource) {
     super(
-      FinantialLedger,
+      FinancialLedger,
       dataSource.createEntityManager(),
       dataSource.createQueryRunner(),
     );

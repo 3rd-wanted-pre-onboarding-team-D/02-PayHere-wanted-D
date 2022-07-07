@@ -10,7 +10,7 @@ import { TypeOrmTestConfig } from './utils/typeorm-test-config';
 import { UpdateRequestDto } from '../src/financial-ledger/dto/update-request.dto';
 import { AuthModule } from '../src/auth/auth.module';
 import { AccessToken } from './utils/access-token';
-import { FinantialLedger } from '../src/entities/FinantialLedger';
+import { FinancialLedger } from '../src/entities/FinancialLedger';
 
 describe('FinancialLedger E2E Test', () => {
   const root = '/financial-ledgers';
@@ -64,7 +64,7 @@ describe('FinancialLedger E2E Test', () => {
         .expect(HttpStatus.NO_CONTENT);
 
       // then
-      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+      const savedFinancialLedger = await em.findOneBy(FinancialLedger, {
         id: financialLedger.id,
       });
 
@@ -185,7 +185,7 @@ describe('FinancialLedger E2E Test', () => {
         .expect(HttpStatus.NO_CONTENT);
 
       // then
-      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+      const savedFinancialLedger = await em.findOneBy(FinancialLedger, {
         id: financialLedger.id,
       });
 
@@ -285,7 +285,7 @@ describe('FinancialLedger E2E Test', () => {
         .expect(HttpStatus.NO_CONTENT);
 
       // then
-      const savedFinancialLedger = await em.findOneBy(FinantialLedger, {
+      const savedFinancialLedger = await em.findOneBy(FinancialLedger, {
         id: financialLedger.id,
       });
 

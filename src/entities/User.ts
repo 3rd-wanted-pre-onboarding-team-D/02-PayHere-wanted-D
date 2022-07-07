@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { FinantialLedger } from './FinantialLedger';
+import { FinancialLedger } from './FinancialLedger';
 import { Token } from './Token';
 
 @Index('id', ['id'], {})
@@ -29,8 +29,8 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => FinantialLedger, (finantialledgers) => finantialledgers.id)
-  finantialLedgerList: FinantialLedger[];
+  @OneToMany(() => FinancialLedger, (finantialledgers) => finantialledgers.id)
+  finantialLedgerList: FinancialLedger[];
 
   @OneToMany(() => Token, (token) => token.id)
   tokenList: Token[];

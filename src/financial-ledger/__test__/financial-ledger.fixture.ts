@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { FinantialLedger } from '../../entities/FinantialLedger';
+import { FinancialLedger } from '../../entities/FinancialLedger';
 import { User } from '../../entities/User';
 import { getUser } from './user.fixture';
 
@@ -7,7 +7,7 @@ export const getFinancialLedger = ({
   id,
   user,
 }: { id?: number; user?: User } = {}) => {
-  const financialLedger = new FinantialLedger();
+  const financialLedger = new FinancialLedger();
   financialLedger.id = id || faker.datatype.number({ min: 1 });
   financialLedger.user = user || getUser();
   financialLedger.date = new Date();
