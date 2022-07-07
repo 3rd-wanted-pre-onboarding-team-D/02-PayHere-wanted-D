@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   Post,
   UseGuards,
@@ -24,6 +25,7 @@ export class FinancialLedgerController {
 
   //가계부 작성
   @Post()
+  @HttpCode(201)
   @UseGuards(JwtAuthGuard)
   async createMemo(
     @Body() financialLedgerWriteDto: FinancialLedgerWriteDto,
@@ -37,6 +39,7 @@ export class FinancialLedgerController {
 
   //작성한 가계부 리스트 전부
   @Get()
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async getAllMemo(@CurrentUser() user: User) {
     const result = await this.financialLedgerService.getAllMemo(user.id);
@@ -45,10 +48,10 @@ export class FinancialLedgerController {
 
   //가계부 1개의 내역 상세 확인
   @Get('/:id')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async getOneMemo(@Param('id') id: number, @CurrentUser() user: User) {
     const result = await this.financialLedgerService.getOneMemo(id, user.id);
-    console.log(result);
     return result;
   }
 }
