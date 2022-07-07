@@ -49,6 +49,10 @@ export class FinancialLedgerService {
       .andWhere('deletedAt IS NULL')
       .getOne();
 
+    if (!data) {
+      throw new NotFoundException('해당하는 가계부 내역을 찾을 수 없습니다.');
+    }
+
     const result = new FinancialLedgerDto(
       data.id,
       data.expenditure,
