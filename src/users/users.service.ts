@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
 import { DeviceDetectorService } from 'src/common/device-detector/device-detector.service';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { User } from 'src/entities/User';
@@ -17,7 +18,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
     private readonly hashingService: HashingService,
     private readonly deviceDetectorService: DeviceDetectorService,
-    // private readonly authService: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   async isExistUser(email: string) {
@@ -54,48 +55,22 @@ export class UsersService {
     if (!isMatch)
       throw new BadRequestException('비밀번호가 일치하지 않습니다.');
 
-    const deviceInfo = await this.deviceDetectorService.parse(userAgent);
-
-    let parsedUserAgent: string;
-
-    if (!deviceInfo.client) parsedUserAgent = userAgent;
-    else {
-      parsedUserAgent =
-        deviceInfo.client.name +
-        deviceInfo.os.name +
-        deviceInfo.os.version +
-        deviceInfo.device.type +
-        deviceInfo.device.model;
-    }
+    const parsedUserAgent = await this.deviceDetectorService.parse(userAgent);
 
     // 토큰 생성
-    const createdToken = await this.authService.createToken(
+    const createdToken = await this.authService.getJwtAccessToken(
       user.id,
       parsedUserAgent,
     );
 
-    // user entity에 token entity 저장;
-
     return [createdToken.accessToken, createdToken.refreshToken];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async logOut(userAgent: string) {
-    const deviceInfo = await this.deviceDetectorService.parse(userAgent);
+  async logOut(userId: number, userAgent: string) {
+    const parsedUserAgent = await this.deviceDetectorService.parse(userAgent);
 
-    let parsedUserAgent: string;
-
-    if (!deviceInfo.client) parsedUserAgent = userAgent;
-    else {
-      parsedUserAgent =
-        deviceInfo.client.name +
-        deviceInfo.os.name +
-        deviceInfo.os.version +
-        deviceInfo.device.type +
-        deviceInfo.device.model;
-    }
-
-    // parsedUserAgent를 갖고 있고 userId가 일치하는 token을 찾고 삭제
+    // 리프레시 토큰 삭제
+    await this.authService.removeRefreshToken(userId, parsedUserAgent);
 
     return [null, null];
   }

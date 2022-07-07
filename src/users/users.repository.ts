@@ -26,4 +26,12 @@ export class UsersRepository {
       .where('email = :email', { email })
       .getOne();
   }
+
+  async addTokenToUser(userId: number, tokenId: string) {
+    return this.usersRepository
+      .createQueryBuilder()
+      .relation(User, 'tokenList')
+      .of(userId)
+      .add(tokenId);
+  }
 }
