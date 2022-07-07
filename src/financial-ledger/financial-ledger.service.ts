@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FinancialLedger } from 'src/entities/FinancialLedger';
 import { Repository } from 'typeorm';
 import { FinancialLedgerDayDto } from './dto/financial-ledger.day.dto';
-import { FinancialLedgerDto } from './dto/financial-ledger.dto';
+import { FinancialLedgerWriteDto } from './dto/financial-ledger.write.dto';
 import { FinancialLedgerGroupDto } from './dto/financial-ledger.group.dto';
 import { FinancialLedgerListDto } from './dto/financial-ledger.list.dto';
 import { FinancialLedgerResponseDto } from './dto/financial-ledger.response.dto';
+import { FinancialLedgerDto } from './dto/financial-ledger.dto';
 
 @Injectable()
 export class FinancialLedgerService {
@@ -16,8 +17,8 @@ export class FinancialLedgerService {
   ) {}
 
   //유저 인증 추가 필요
-  async createMemo(financialLedgerDto: FinancialLedgerDto) {
-    const { expenditure, income, date, remarks } = financialLedgerDto;
+  async createMemo(financialLedgerWriteDto: FinancialLedgerWriteDto) {
+    const { expenditure, income, date, remarks } = financialLedgerWriteDto;
 
     const memo = this.financialLedgerRepository.create({
       expenditure: expenditure,
@@ -30,8 +31,19 @@ export class FinancialLedgerService {
     return memo;
   }
 
-  async getOneMemo(id: number) {
-    return await this.financialLedgerRepository.findOne(id);
+  async getOneMemo(id: number): Promise<FinancialLedgerDto> {
+    const data = await this.financialLedgerRepository.findOne(id);
+    const result = new FinancialLedgerDto(
+      data.id,
+      data.expenditure,
+      data.income,
+      data.date,
+      data.remarks,
+      data.createdAt,
+      data.updatedAt,
+      data.deletedAt,
+    );
+    return result;
   }
 
   async getAllMemo() {
@@ -57,6 +69,7 @@ export class FinancialLedgerService {
           dayList.push(data);
         }
       });
+
       const dayData = new FinancialLedgerDayDto(gData.today_sum, dayList);
       const finalData = new FinancialLedgerResponseDto(gData.day_date, dayData);
       resultList.push(finalData);
@@ -65,40 +78,6 @@ export class FinancialLedgerService {
     console.log(resultList);
     return resultList;
   }
-  // async getAllMemo() {
-  //   const groupData = await this.findDayGroup(3);
-  //   const userData = await this.findUserList(3);
-
-  //   const userList: Map<string, FinancialLedgerResultDto> = new Map();
-
-  //   groupData.forEach((gData) => {
-  //     const groupDay = gData.day_date;
-  //     if (!userList.has(groupDay)) {
-  //       userList.set(groupDay, {
-  //         money: gData.today_sum,
-  //         memolist: [],
-  //       });
-  //     }
-
-  //     userData.forEach((uData) => {
-  //       if (uData.day_date === groupDay && gData.idxs.includes(uData.id)) {
-  //         userList
-  //           .get(groupDay)
-  //           .memolist.push(
-  //             new FinancialLedgerListDto(
-  //               uData.id,
-  //               uData.day_date,
-  //               uData.expenditure,
-  //               uData.income,
-  //               uData.remarks,
-  //             ),
-  //           );
-  //       }
-  //     });
-  //   });
-  //   console.log(userList);
-  //   return userList;
-  // }
 
   async findDayGroup(userId: number): Promise<FinancialLedgerGroupDto[]> {
     //하루단위 그룹화한 데이터 (yyyy-mm-dd, 사용금액총량, 동일날짜인 메모들의 아이디)

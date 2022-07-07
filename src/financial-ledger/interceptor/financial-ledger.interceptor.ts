@@ -5,7 +5,6 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
-import { FinancialLedger } from 'src/entities/FinancialLedger';
 
 @Injectable()
 export class FinancialLedgerInterceptor implements NestInterceptor {
