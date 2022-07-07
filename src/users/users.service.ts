@@ -4,10 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
-import { DeviceDetectorService } from 'src/common/device-detector/device-detector.service';
-import { HashingService } from 'src/common/hashing/hashing.service';
-import { User } from 'src/entities/User';
+import { AuthService } from '../auth/auth.service';
+import { DeviceDetectorService } from '../common/device-detector/device-detector.service';
+import { HashingService } from '../common/hashing/hashing.service';
+import { User } from '../entities/User';
 import { LogInBodyDto } from './dto/request/log-in-body.dto';
 import { SingUpBodyDto } from './dto/request/sign-up-body.dto';
 import { UsersRepository } from './users.repository';
@@ -21,7 +21,7 @@ export class UsersService {
     private readonly authService: AuthService,
   ) {}
 
-  async isExistUser(email: string) {
+  async isExistUser(email: string): Promise<User> {
     return this.usersRepository.findUserByEmail(email);
   }
 

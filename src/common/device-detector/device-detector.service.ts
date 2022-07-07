@@ -3,7 +3,7 @@ import DeviceDetector = require('device-detector-js');
 
 @Injectable()
 export class DeviceDetectorService {
-  async parse(userAgent: string) {
+  async parse(userAgent: string): Promise<string> {
     const deviceDetector = new DeviceDetector();
     const deviceInfo = deviceDetector.parse(userAgent);
 
