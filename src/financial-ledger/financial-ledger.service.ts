@@ -32,7 +32,14 @@ export class FinancialLedgerService {
   }
 
   async getOneMemo(id: number): Promise<FinancialLedgerDto> {
-    const data = await this.financialLedgerRepository.findOne(id);
+    const data = await this.financialLedgerRepository
+      .createQueryBuilder('FinancialLedger')
+      .where('id = :id', {
+        id: id,
+      })
+      .andWhere('deletedAt IS NULL')
+      .getRawOne();
+
     const result = new FinancialLedgerDto(
       data.id,
       data.expenditure,

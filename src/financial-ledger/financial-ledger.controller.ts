@@ -14,7 +14,7 @@ import { map } from 'rxjs';
 import { FinancialLedgerWriteDto } from './dto/financial-ledger.write.dto';
 
 @UseInterceptors(FinancialLedgerInterceptor)
-@Controller('api/financial-ledger/memo')
+@Controller('financial-ledgers')
 export class FinancialLedgerController {
   constructor(
     private readonly financialLedgerService: FinancialLedgerService,
