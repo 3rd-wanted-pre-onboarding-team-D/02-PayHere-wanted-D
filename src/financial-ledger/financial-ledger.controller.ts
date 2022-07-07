@@ -4,6 +4,7 @@ import { User } from 'src/entities/User';
 import { FinancialLedgerDto } from './dto/financial-ledger.dto';
 import { FinancialLedgerService } from './financial-ledger.service';
 
+@UseInterceptors(FinancialLedgerInterceptor)
 @Controller('api/financial-ledger/memo')
 export class FinancialLedgerController {
   constructor(
