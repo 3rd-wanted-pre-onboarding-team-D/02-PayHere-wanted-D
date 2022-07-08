@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { FinancialLedger } from 'src/entities/FinancialLedger';
 import { FinancialLedgerController } from './financial-ledger.controller';
 import { FinancialLedgerService } from './financial-ledger.service';
+import { FinancialLedgerRepository } from './financial-ledger.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FinancialLedger])],
   controllers: [FinancialLedgerController],
-  providers: [FinancialLedgerService],
+  providers: [FinancialLedgerService, FinancialLedgerRepository],
 })
 export class FinancialLedgerModule {}

@@ -26,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    */
   async validate(payload: any) {
     //payload의 id를 통해 user객체를 가져온다.
-    const user: User = await this.userRepository.findOne({
+    const user: User = await this.userRepository.findOneBy({
       id: payload.id,
     });
     if (!user) {
