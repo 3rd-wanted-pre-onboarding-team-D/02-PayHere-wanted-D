@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { empty } from 'rxjs';
 import { DataSource, Not, IsNull } from 'typeorm';
 import { clearDatabase } from '../../../test/utils/clear-database';
 import { TypeOrmTestConfig } from '../../../test/utils/typeorm-test-config';
@@ -191,10 +190,10 @@ describe('FinancialLedgerService', () => {
 
       try {
         // When
-        await repository.getOneMemo(1, user.id);
-      } catch (e) {
+        const result = await repository.getOneMemo(1, user.id);
         // Then
-      }
+        expect(result).resolves.toEqual(UnauthorizedException);
+      } catch (e) {}
     });
   });
 
@@ -207,10 +206,10 @@ describe('FinancialLedgerService', () => {
 
       try {
         // When
-        await repository.getAllMemo(user.id);
-      } catch (e) {
+        const result = await repository.getAllMemo(user.id);
         // Then
-      }
+        expect(result).toThrowError(UnauthorizedException);
+      } catch (e) {}
     });
   });
 });
