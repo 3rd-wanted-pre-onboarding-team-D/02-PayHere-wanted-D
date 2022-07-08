@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { FinancialLedgerController } from './financial-ledger.controller';
-import { FinancialLedgerRepository } from './financial-ledger.repository';
 import { FinancialLedgerService } from './financial-ledger.service';
+import { FinancialLedgerRepository } from './financial-ledger.repository';
 
 @Module({
   controllers: [FinancialLedgerController],

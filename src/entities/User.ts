@@ -28,8 +28,8 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => FinancialLedger, (finantialledgers) => finantialledgers.id)
-  finantialLedgerList: FinancialLedger[];
+  @OneToMany(() => FinancialLedger, (financialledgers) => financialledgers.user)
+  financialLedgerList: FinancialLedger[];
 
   @OneToMany(() => Token, (token) => token.id)
   tokenList: Token[];
